@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, redirect, render_template, url_for
 
 pages = Blueprint("pages", __name__)
 
@@ -20,3 +20,8 @@ def profile_page(username):
 @pages.get("/register")
 def auth_page():
     return render_template("app.html", page="auth")
+
+
+@pages.get("/favicon.ico")
+def favicon():
+    return redirect(url_for("static", filename="favicon.svg"))
