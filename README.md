@@ -1,5 +1,7 @@
 # Маяк
 
+[![Проверки](https://github.com/YjastherY/pipnya/actions/workflows/tests.yml/badge.svg)](https://github.com/YjastherY/pipnya/actions/workflows/tests.yml)
+
 Я разработал «Маяк» — микроблог для коротких заметок. В нём можно публиковать записи с тегами, искать идеи, подписываться на авторов и сохранять интересные публикации. За основу взял тему [Build a Microblog with Flask](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) из [каталога Project Based Learning](https://github.com/practical-tutorials/project-based-learning). Интерфейс, API и схему данных реализовал для этого проекта.
 
 ![Главная страница Маяка с демонстрационными записями](docs/images/home.png)
@@ -62,4 +64,4 @@ SQLite используется с одним экземпляром прило�
 - [Контракт API](docs/api.md)
 - [Связь функций с файлами и страницами](docs/traceability.md)
 
-Репозиторий для публикации: [YjastherY/pipnya](https://github.com/YjastherY/pipnya). Ссылку на деплой и бейдж качества добавлю после публикации и проверки работающего сайта.
+Репозиторий проекта: [YjastherY/pipnya](https://github.com/YjastherY/pipnya). Бейдж выше показывает результат автоматических проверок GitHub Actions. Ссылку на деплой и оценку сопровождаемости добавлю после размещения сайта и анализа кода.
