@@ -81,11 +81,12 @@ class MicroblogTestCase(unittest.TestCase):
         self.register(self.alice, "alice")
         self.register(self.bob, "bobby")
         created = self.create_post(
-            self.alice, "Python и базы данных", ["python", "sqlite"]
+            self.alice, "Python и базы данных", ["python", "sqlite", "идеи"]
         )
         self.assertEqual(created.status_code, 201)
         post_id = created.json["post"]["id"]
         self.assertEqual(self.bob.get("/api/posts?tag=python").json["total"], 1)
+        self.assertEqual(self.bob.get("/api/posts?tag=идеи").json["total"], 1)
         self.assertEqual(self.bob.get("/api/posts?q=%25").json["total"], 0)
         self.assertEqual(self.bob.get("/api/posts?q=базы").json["total"], 1)
         self.assertEqual(

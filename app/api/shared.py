@@ -5,7 +5,7 @@ from flask import g, jsonify, request
 from ..db import get_db
 
 USERNAME_PATTERN = re.compile(r"^[a-zA-Z0-9_]{3,24}$")
-TAG_PATTERN = re.compile(r"^[a-z0-9-]{2,24}$")
+TAG_PATTERN = re.compile(r"^[a-zа-яё0-9-]{2,24}$")
 
 
 def error(message, status=400):
@@ -44,7 +44,11 @@ def parse_post(data):
     normalized = []
     for tag in tags:
         if not isinstance(tag, str) or not TAG_PATTERN.fullmatch(tag.strip().lower()):
-            return None, None, "Теги: 2–24 символа, латиница, цифры или дефис"
+            return (
+                None,
+                None,
+                "Теги: 2–24 символа, латиница, кириллица, цифры или дефис",
+            )
         name = tag.strip().lower()
         if name not in normalized:
             normalized.append(name)
