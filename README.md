@@ -1,6 +1,7 @@
 # Маяк
 
 [![Проверки](https://github.com/YjastherY/pipnya/actions/workflows/tests.yml/badge.svg)](https://github.com/YjastherY/pipnya/actions/workflows/tests.yml)
+[![Сопровождаемость](https://qlty.sh/gh/YjastherY/projects/pipnya/maintainability.svg)](https://qlty.sh/gh/YjastherY/projects/pipnya)
 
 Я разработал «Маяк» — микроблог для коротких заметок. В нём можно публиковать записи с тегами, искать идеи, подписываться на авторов и сохранять интересные публикации. За основу взял тему [Build a Microblog with Flask](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) из [каталога Project Based Learning](https://github.com/practical-tutorials/project-based-learning). Интерфейс, API и схему данных реализовал для этого проекта.
 
@@ -64,4 +65,4 @@ SQLite используется с одним экземпляром прило�
 - [Контракт API](docs/api.md)
 - [Связь функций с файлами и страницами](docs/traceability.md)
 
-Репозиторий проекта: [YjastherY/pipnya](https://github.com/YjastherY/pipnya). Бейдж выше показывает результат автоматических проверок GitHub Actions. Ссылку на деплой и оценку сопровождаемости добавлю после размещения сайта и анализа кода.
+Репозиторий проекта: [YjastherY/pipnya](https://github.com/YjastherY/pipnya). Бейджи выше показывают результат проверок GitHub Actions и оценку сопровождаемости Qlty после завершения анализа. Ссылку на деплой добавлю после размещения сайта.
