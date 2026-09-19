@@ -3,18 +3,18 @@
 [![Проверки](https://github.com/YjastherY/pipnya/actions/workflows/tests.yml/badge.svg)](https://github.com/YjastherY/pipnya/actions/workflows/tests.yml)
 [![Сопровождаемость](https://qlty.sh/gh/YjastherY/projects/pipnya/maintainability.svg)](https://qlty.sh/gh/YjastherY/projects/pipnya)
 
-Я разработал «Маяк» — микроблог для коротких заметок. В нём можно публиковать записи с тегами, искать идеи, подписываться на авторов и сохранять интересные публикации. За основу взял тему [Build a Microblog with Flask](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) из [каталога Project Based Learning](https://github.com/practical-tutorials/project-based-learning). Интерфейс, API и схему данных реализовал для этого проекта.
+Для учебной практики я разработал «Маяк» — микроблог для коротких заметок. Здесь можно публиковать записи с тегами, искать материалы, подписываться на авторов и сохранять интересные публикации. Основой стала тема [Build a Microblog with Flask](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) из каталога [Project Based Learning](https://github.com/practical-tutorials/project-based-learning#python).
 
-![Главная страница Маяка с демонстрационными записями](docs/images/home.png)
+![Демонстрация основного сценария](docs/images/demo.gif)
 
 ## Возможности
 
-- Регистрация и вход с хранением хеша пароля.
-- Создание, редактирование и удаление своих заметок.
-- Теги, поиск и постраничная выдача публикаций.
-- Профили авторов и лента подписок.
-- Сохранённые заметки.
-- Резервное копирование и проверка целостности SQLite.
+- регистрация и вход с безопасным хранением хеша пароля;
+- создание, редактирование и удаление собственных заметок;
+- теги, поиск и постраничная выдача публикаций;
+- профили авторов и лента подписок;
+- сохранённые заметки;
+- проверка целостности и резервное копирование SQLite.
 
 ## Стек
 
@@ -24,6 +24,16 @@
 | Сервер и API | Python 3.11+, Flask 3.1 |
 | База данных | SQLite 3 |
 | Тесты | `unittest`, тестовый клиент Flask |
+| Развёртывание | Docker, Gunicorn, Render |
+
+## Онлайн-версия
+
+- Сайт: [https://mayak-yjasthery.onrender.com](https://mayak-yjasthery.onrender.com)
+- Проверка состояния: [https://mayak-yjasthery.onrender.com/api/health](https://mayak-yjasthery.onrender.com/api/health)
+- Тестовый пользователь: `demo`
+- Пароль тестового пользователя передаётся проверяющему в техническом паспорте отчёта.
+
+На бесплатном экземпляре Render файловая система временная, поэтому демонстрационные данные восстанавливаются при перезапуске. Для постоянного хранения пользовательских данных следует подключить Persistent Disk и оставить базу по пути `/data/microblog.sqlite3`.
 
 ## Локальный запуск
 
@@ -34,11 +44,18 @@ pip install -r requirements.txt
 flask --app run.py run
 ```
 
-После запуска сайт доступен по адресу `http://127.0.0.1:5000`. При первом запуске приложение создаёт базу данных в `instance/microblog.sqlite3`. На Windows окружение активируется командой `.venv\Scripts\activate` вместо `source`.
+После запуска сайт доступен по адресу `http://127.0.0.1:5000`. При первом старте приложение создаёт базу данных в `instance/microblog.sqlite3`. В Windows окружение активируется командой `.venv\Scripts\activate`.
 
-Для демонстрационных записей и аккаунта `demo` нужно задать в переменной `DEMO_PASSWORD` пароль длиной от 10 символов и выполнить `flask --app run.py seed-demo`. Команда не печатает пароль и при повторном запуске не дублирует записи. Пароль от размещённого сайта укажу проверяющему в отчёте.
+Чтобы добавить демонстрационные записи и аккаунт `demo`, нужно задать пароль длиной от 10 символов и выполнить команду:
 
-## Проверка и обслуживание
+```bash
+export DEMO_PASSWORD="выбранный-пароль"
+flask --app run.py seed-demo
+```
+
+Команда не выводит пароль и при повторном запуске не дублирует записи.
+
+## Проверка проекта
 
 ```bash
 python -m unittest discover -s tests -v
@@ -46,23 +63,36 @@ flask --app run.py check-db
 flask --app run.py backup-db backups/microblog.sqlite3
 ```
 
-Для проверки стиля кода нужны зависимости из `requirements-dev.txt`. Команды: `ruff check app tests run.py` и `ruff format --check app tests run.py`. Эти проверки, тесты и проверка синтаксиса JavaScript запускаются также в GitHub Actions.
-
-Для размещения нужны `APP_ENV=production`, `SECRET_KEY` (случайная длинная строка) и `DATABASE_PATH` (путь на постоянном диске). Приложение запускается через WSGI-сервер:
+Для проверки стиля используются зависимости из `requirements-dev.txt`:
 
 ```bash
-gunicorn --bind 0.0.0.0:8000 run:app
+pip install -r requirements-dev.txt
+ruff check app tests run.py
+ruff format --check app tests run.py
 ```
 
-SQLite используется с одним экземпляром приложения и постоянным диском. На хостинге с временной файловой системой данные пропадут после перезапуска, поэтому для деплоя нужно постоянное хранилище.
+Тесты, Ruff и проверка синтаксиса JavaScript также запускаются в GitHub Actions. Бейдж Qlty показывает оценку сопровождаемости A; Qlty Cloud является актуальной заменой Code Climate Quality.
 
-Для контейнерного запуска подготовил [Dockerfile](Dockerfile). При запуске нужно подключить постоянный том к `/data` и задать `SECRET_KEY`, а для демонстрационного аккаунта — `DEMO_PASSWORD`. Контейнер создаёт демонстрационные данные и запускает Gunicorn.
+## Развёртывание
+
+В корне находится `render.yaml` с готовой конфигурацией Render Blueprint. Во время создания сервиса требуется задать только `DEMO_PASSWORD`; `SECRET_KEY` генерируется автоматически. Контейнер создаёт демонстрационные данные и запускает Gunicorn на порту, предоставленном хостингом.
+
+Для ручного контейнерного запуска:
+
+```bash
+docker build -t mayak .
+docker run --rm -p 8000:8000 \
+  -e SECRET_KEY="случайная-длинная-строка" \
+  -e DEMO_PASSWORD="выбранный-пароль" \
+  -v mayak-data:/data \
+  mayak
+```
 
 ## Документация
 
 - [Архитектура, ERD и сценарии](docs/architecture.md)
 - [Схема и обслуживание БД](docs/database.md)
 - [Контракт API](docs/api.md)
-- [Связь функций с файлами и страницами](docs/traceability.md)
+- [Связь функций с кодом и страницами](docs/traceability.md)
 
-Репозиторий проекта: [YjastherY/pipnya](https://github.com/YjastherY/pipnya). Бейджи выше показывают результат проверок GitHub Actions и оценку сопровождаемости Qlty после завершения анализа. Ссылку на деплой добавлю после размещения сайта.
+Репозиторий проекта: [YjastherY/pipnya](https://github.com/YjastherY/pipnya).
