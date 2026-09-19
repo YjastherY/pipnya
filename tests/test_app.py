@@ -3,6 +3,7 @@ import tempfile
 import unittest
 from contextlib import closing
 from pathlib import Path
+from unittest.mock import patch
 
 from app import create_app
 from app.db import get_db
@@ -198,6 +199,27 @@ class MicroblogTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.alice.get("/api/posts?feed=following").json["total"], 2)
         self.assertEqual(self.alice.get("/api/posts?feed=saved").json["total"], 1)
+
+    def test_automatic_demo_seed(self):
+        automatic_database = Path(self.temp.name) / "automatic.sqlite3"
+        with patch.dict(
+            "os.environ",
+            {
+                "AUTO_SEED_DEMO": "1",
+                "DEMO_PASSWORD": "demo-password-123",
+            },
+        ):
+            automatic_app = create_app(
+                {
+                    "TESTING": True,
+                    "DATABASE": str(automatic_database),
+                    "SECRET_KEY": "test-secret",
+                }
+            )
+        with automatic_app.app_context():
+            db = get_db()
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM users").fetchone()[0], 2)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM posts").fetchone()[0], 4)
 
 
 if __name__ == "__main__":

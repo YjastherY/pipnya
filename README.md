@@ -24,16 +24,16 @@
 | Сервер и API | Python 3.11+, Flask 3.1 |
 | База данных | SQLite 3 |
 | Тесты | `unittest`, тестовый клиент Flask |
-| Развёртывание | Docker, Gunicorn, Render |
+| Развёртывание | Vercel, Docker, Gunicorn |
 
 ## Онлайн-версия
 
-- Сайт: [https://mayak-yjasthery.onrender.com](https://mayak-yjasthery.onrender.com)
-- Проверка состояния: [https://mayak-yjasthery.onrender.com/api/health](https://mayak-yjasthery.onrender.com/api/health)
+- Сайт: [https://mayak-yjasthery.vercel.app](https://mayak-yjasthery.vercel.app)
+- Проверка состояния: [https://mayak-yjasthery.vercel.app/api/health](https://mayak-yjasthery.vercel.app/api/health)
 - Тестовый пользователь: `demo`
 - Пароль тестового пользователя передаётся проверяющему в техническом паспорте отчёта.
 
-На бесплатном экземпляре Render файловая система временная, поэтому демонстрационные данные восстанавливаются при перезапуске. Для постоянного хранения пользовательских данных следует подключить Persistent Disk и оставить базу по пути `/data/microblog.sqlite3`.
+Vercel запускает Flask как serverless-функцию с временной файловой системой. При холодном запуске приложение заново создаёт SQLite и демонстрационные данные, поэтому онлайн-версия предназначена для проверки учебного сценария, а не для постоянного хранения пользовательских публикаций.
 
 ## Локальный запуск
 
@@ -75,7 +75,7 @@ ruff format --check app tests run.py
 
 ## Развёртывание
 
-В корне находится `render.yaml` с готовой конфигурацией Render Blueprint. Во время создания сервиса требуется задать только `DEMO_PASSWORD`; `SECRET_KEY` генерируется автоматически. Контейнер создаёт демонстрационные данные и запускает Gunicorn на порту, предоставленном хостингом.
+Vercel автоматически определяет Flask-приложение через `index.py`. Для production-проекта задаются `SECRET_KEY`, `DEMO_PASSWORD` и `AUTO_SEED_DEMO=1`. Локальный и контейнерный запуск продолжают использовать `run.py`.
 
 Для ручного контейнерного запуска:
 

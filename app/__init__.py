@@ -11,10 +11,14 @@ from .db import init_app as init_db_app
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    default_database = (
+        "/tmp/mayak.sqlite3"
+        if os.environ.get("VERCEL")
+        else str(Path(app.instance_path) / "microblog.sqlite3")
+    )
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("SECRET_KEY") or secrets.token_hex(32),
-        DATABASE=os.environ.get("DATABASE_PATH")
-        or str(Path(app.instance_path) / "microblog.sqlite3"),
+        DATABASE=os.environ.get("DATABASE_PATH") or default_database,
         MAX_CONTENT_LENGTH=64 * 1024,
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
@@ -32,7 +36,7 @@ def create_app(test_config=None):
     Path(app.config["DATABASE"]).parent.mkdir(parents=True, exist_ok=True)
     init_db_app(app)
 
-    from .demo import seed_demo_command
+    from .demo import seed_demo_command, seed_demo_data
 
     app.cli.add_command(seed_demo_command)
 
@@ -44,6 +48,8 @@ def create_app(test_config=None):
     app.teardown_appcontext(close_db)
     with app.app_context():
         init_db()
+        if os.environ.get("AUTO_SEED_DEMO") == "1":
+            seed_demo_data(os.environ.get("DEMO_PASSWORD", ""))
 
     @app.before_request
     def load_identity():

@@ -49,7 +49,13 @@ def demo_post(db, author_id, body, tags):
 @click.command("seed-demo")
 @with_appcontext
 def seed_demo_command():
-    password = os.environ.get("DEMO_PASSWORD", "")
+    seed_demo_data(os.environ.get("DEMO_PASSWORD", ""))
+    click.echo(
+        "Демонстрационные данные готовы. Логин: demo, пароль: значение DEMO_PASSWORD"
+    )
+
+
+def seed_demo_data(password):
     if len(password) < 10:
         raise click.ClickException("Задайте DEMO_PASSWORD длиной не менее 10 символов")
     db = get_db()
@@ -90,6 +96,3 @@ def seed_demo_command():
             "INSERT OR IGNORE INTO bookmarks(user_id, post_id) VALUES (?, ?)",
             (demo_id, guide_post_id),
         )
-    click.echo(
-        "Демонстрационные данные готовы. Логин: demo, пароль: значение DEMO_PASSWORD"
-    )
